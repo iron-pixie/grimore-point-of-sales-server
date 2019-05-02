@@ -24,10 +24,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 @RestController
-public abstract class AbstractController {
+public class GeneralNotComplexController {
 
     private Connection con;
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value = "/{type}/add", method = RequestMethod.POST)
     public HashMap<String, String> Add(@PathVariable String type, @RequestBody HashMap<String, String> addData) {
 
@@ -35,15 +36,15 @@ public abstract class AbstractController {
 
         try {
             int i = 1;
-            String connectionString = "jdbc:mysql://homes-ltoa-database.cebbknh24dty.us-west-2.rds.amazonaws.com/" + type;
+            String connectionString = "jdbc:mysql://grimore-db.cebbknh24dty.us-west-2.rds.amazonaws.com/" + type;
             String objectList = "(";
             ArrayList<String> keyList = new ArrayList<String>();
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(connectionString, "test", "testtest");
+            con = DriverManager.getConnection(connectionString, "grimore", "grimorepos");
             Statement stmt = con.createStatement();
             String queryString = "insert into " + type;
             ArrayList<String> objectArray = new ArrayList<String>();
-            
+
             addData.forEach((key, value) -> {
                 String mapper = key + ", " + "values (";
                 objectArray.add(mapper);
@@ -63,8 +64,8 @@ public abstract class AbstractController {
                 i++;
             }
 
-        stmt.executeUpdate(queryString);
-        responseMap.put("Success: ", "New Row Added!");
+            stmt.executeUpdate(queryString);
+            responseMap.put("Success: ", "New Row Added!");
         }
         catch(Exception e)
         {
